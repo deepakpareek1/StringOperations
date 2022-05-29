@@ -1,7 +1,5 @@
 package com.string.operations;
 
-import java.io.File;
-
 public class MainClass {
 
 	public MainClass() {
@@ -12,8 +10,6 @@ public class MainClass {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		
-		File file = Operations.getFile("D:\\dictionary.txt");
 		   
 		String input = Operations.readInput();
 		
@@ -25,3 +21,9 @@ public class MainClass {
 	
 
 }
+
+
+
+
+
+
