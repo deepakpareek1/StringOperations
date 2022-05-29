@@ -1,0 +1,41 @@
+## Package Files
+*.class
+*.jar
+*.war
+*.ear
+*.nar
+*.zip
+*.tar.gz
+*.rar
+*.iml
+*.idea
+*.swp
+*~
+
+
+## Gradle
+bin/
+build/
+/build
+.gradle
+.gradletasknamecache
+gradle-app.setting
+!gradle-wrapper.jar
+
+## Eclipse
+.settings/
+bin/
+tmp/
+.metadata
+.classpath
+.project
+*.tmp
+*.bak
+*.swp
+*~.nib
+local.properties
+.loadpath
+.factorypath
+
+#Folder config file
+Desktop.ini
