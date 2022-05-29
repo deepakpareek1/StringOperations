@@ -3,7 +3,6 @@ package com.string.operations;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
-import java.util.List;
 import java.util.Scanner;
 
 public class Operations {
@@ -71,15 +70,15 @@ public class Operations {
 		if (option.equals("1")) {
 			output = findWord(file, input);
 		} else if (option.equals("2")) {
-			
+			output = getCorrectCase(file, input);
 		} else if (option.equals("3")) {
-			
+			output = getCorrectPunctuation(file, input);
 		} else if (option.equals("4")) {
-			
+			output = getCorrectDuplicateLetters(file, input);
 		} else if (option.equals("5")) {
-			
+			output = getCorrectAdjacentLetters(file, input);
 		} else if (option.equals("6")) {
-			
+			output = getTransposingLetters(file, input);
 		}
 		return output;
 		
@@ -113,7 +112,22 @@ public class Operations {
 	 * @param: file, matchWord
 	 */
 	public static String getCorrectCase(File file, String matchWord) {
-		return "";
+		ArrayList<String> wordList = new ArrayList<>();
+		try {
+		    scanner = new Scanner(file);
+		    
+		    //now read the file line by line...
+		    while (scanner.hasNextLine()) {
+		        String line = scanner.nextLine();
+		        if(line.equalsIgnoreCase(matchWord)) { 
+		        	String tmpStr = line.substring(0, 1).toUpperCase() + line.substring(1, line.length()).toLowerCase();
+		        	wordList.add(tmpStr);
+		        }
+		    }
+		} catch(FileNotFoundException e) { 
+			System.out.println("Read file error: "+ e.getMessage());
+		}
+		return String.join(", ", wordList);
 	}
 	
 	/*
@@ -149,7 +163,7 @@ public class Operations {
 	}
 	
 	/*
-	 * Find word
+	 * Print result
 	 * @param: 
 	 */
 	public static void printOutput(String result) {
