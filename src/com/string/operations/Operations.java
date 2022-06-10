@@ -4,10 +4,14 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Scanner;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class Operations {
 
 	private static Scanner scanner;
+	private static String REGEX_3 = "[\\/\\-']";
+	private static String REGEX_4 = "(.)\1";
 
 	public Operations() {
 		// TODO Auto-generated constructor stub
@@ -64,7 +68,7 @@ public class Operations {
 	 * 
 	 * @param: 
 	 */
-	public static String performOperation(File file, String option, String input) {
+	public static void performOperation(File file, String option, String input) {
 		String output = "Incorrect Input";
 		
 		if (option.equals("1")) {
@@ -80,7 +84,8 @@ public class Operations {
 		} else if (option.equals("6")) {
 			output = getTransposingLetters(file, input);
 		}
-		return output;
+		
+		Operations.printOutput(output);
 		
 	}
 	
@@ -135,7 +140,42 @@ public class Operations {
 	 * @param: file, matchWord
 	 */
 	public static String getCorrectPunctuation(File file, String matchWord) {
-		return "";
+		
+	    ArrayList<String> wordList = new ArrayList<>();
+	    
+	    try {
+		    scanner = new Scanner(file);
+		    
+		    //now read the file line by line...
+		    while (scanner.hasNextLine()) {
+		        String line = scanner.nextLine();
+		        
+		        if (isWordMatch(line, matchWord, REGEX_3)) {
+			        
+		        	wordList.add(line);
+		        }
+		    }
+		} catch(FileNotFoundException e) { 
+			System.out.println("Read file error: "+ e.getMessage());
+		}
+	    
+		return String.join(", ", wordList);
+	}
+	
+	/*
+	 * Matching two string after removal of special chars
+	 */
+	private static boolean isWordMatch(String line, String matchWord, String regex) {
+		boolean isMatch = false;
+		
+		String tmpLine = line.replaceAll(regex, "");
+		String tmpMatchWord = matchWord.replaceAll(regex, "");
+		
+		if (tmpLine.equalsIgnoreCase(tmpMatchWord)) {
+			isMatch = true;
+		}
+		
+		return isMatch;
 	}
 	
 	/*
@@ -143,7 +183,21 @@ public class Operations {
 	 * @param: file, matchWord
 	 */
 	public static String getCorrectDuplicateLetters(File file, String matchWord) {
-		return "";
+		ArrayList<String> wordList = new ArrayList<>();
+		try {
+		    scanner = new Scanner(file);
+		    
+		    //now read the file line by line...
+		    while (scanner.hasNextLine()) {
+		        String line = scanner.nextLine();
+		        if(matchWord.contains(line)) { 
+		        	wordList.add(line);
+		        }
+		    }
+		} catch(FileNotFoundException e) { 
+			System.out.println("Read file error: "+ e.getMessage());
+		}
+		return String.join(", ", wordList);
 	}
 	
 	/*
@@ -151,7 +205,42 @@ public class Operations {
 	 * @param: file, matchWord
 	 */
 	public static String getCorrectAdjacentLetters(File file, String matchWord) {
-		return "";
+		ArrayList<String> wordList = new ArrayList<>();
+		try {
+		    scanner = new Scanner(file);
+		    
+		    //now read the file line by line...
+		    while (scanner.hasNextLine()) {
+		        String line = scanner.nextLine();
+		        if(matchWord.length() == line.length() && isAdjacentCharMatch(line, matchWord))
+		        { 
+		        	wordList.add(line);
+		        }
+		    }
+		} catch(FileNotFoundException e) { 
+			System.out.println("Read file error: "+ e.getMessage());
+		}
+		return String.join(", ", wordList);
+	}
+	
+	/*
+	 * Matching adjacent mistaken chars in a word
+	 */
+	private static boolean isAdjacentCharMatch(String line, String matchWord){
+		boolean isMatch = false;
+		char anyChar = '.';
+		
+		for(int i=0;i<matchWord.length()-1;i++) {
+			String regex = matchWord.replace(matchWord.charAt(i), anyChar);
+			// Create & match dynamic Pattern object
+		     Pattern r = Pattern.compile(regex, Pattern.CASE_INSENSITIVE);
+		     Matcher m = r.matcher(line);
+		     if (m.find()) {
+		    	 isMatch = true;
+		    	 break;
+		     }
+		}
+		return isMatch;	
 	}
 	
 	/*
@@ -159,7 +248,57 @@ public class Operations {
 	 * @param: file, matchWord
 	 */
 	public static String getTransposingLetters(File file, String matchWord) {
-		return "";
+		ArrayList<String> wordList = new ArrayList<>();
+		try {
+		    scanner = new Scanner(file);
+		    
+		    //now read the file line by line...
+		    while (scanner.hasNextLine()) {
+		        String line = scanner.nextLine();
+		        if(matchWord.length() == line.length() && isTransposingCharMatch(line, matchWord))
+		        { 
+		        	wordList.add(line);
+		        }
+		    }
+		} catch(FileNotFoundException e) { 
+			System.out.println("Read file error: "+ e.getMessage());
+		}
+		return String.join(", ", wordList);
+	}
+	
+	/*
+	 * Matching transposing mistaken chars in a word
+	 */
+	private static boolean isTransposingCharMatch(String line, String matchWord){
+		boolean isMatch = false;
+		char pos1, pos2;
+		StringBuilder word = new StringBuilder();
+		
+		if (line.equalsIgnoreCase("delhi")) {
+			isMatch = false;
+		}
+		
+		for(int i=0;i<matchWord.length()-1;i++) {
+			word.setLength(0); 
+			word.append(matchWord);
+			pos1 = matchWord.charAt(i);
+			pos2 = matchWord.charAt(i+1);
+			
+				if (pos1 != pos2) {
+					
+					word.setCharAt(i, pos2);
+					word.setCharAt(i+1, pos1);
+					
+					// Create & match dynamic Pattern object
+				     Pattern r = Pattern.compile(word.toString(), Pattern.CASE_INSENSITIVE);
+				     Matcher m = r.matcher(line);
+				     if (m.find()) {
+				    	 isMatch = true;
+				    	 break;
+			     }
+			}
+		}
+		return isMatch;	
 	}
 	
 	/*
@@ -167,6 +306,7 @@ public class Operations {
 	 * @param: 
 	 */
 	public static void printOutput(String result) {
+		result = result.isEmpty() ? "None" : result;
 		System.out.println("Output: "+result);
 	}
 	

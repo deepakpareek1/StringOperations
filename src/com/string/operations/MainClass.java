@@ -21,9 +21,8 @@ public class MainClass {
 		String option = input.get(0);
 		String str = input.get(1);
 		
-		String result = Operations.performOperation(file, option, str);
-		
-		Operations.printOutput(result);
+		Operations.performOperation(file, option, str);
+	
 		
 	}
 	
