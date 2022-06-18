@@ -6,9 +6,12 @@ import java.util.ArrayList;
 import java.util.Scanner;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 public class Operations {
 
+	public static String FILE_PATH = "C:/Users/dpareek/Documents/dictionary.txt";
+	
 	private static Scanner scanner;
 	private static String REGEX_3 = "[\\/\\-']";
 	private static String REGEX_4 = "(.)\1";
@@ -70,22 +73,29 @@ public class Operations {
 	 */
 	public static void performOperation(File file, String option, String input) {
 		String output = "Incorrect Input";
+		ArrayList<String> lstOutput = null;
 		
 		if (option.equals("1")) {
 			output = findWord(file, input);
+			Operations.printOutput(output);
 		} else if (option.equals("2")) {
-			output = getCorrectCase(file, input);
+			lstOutput = getCorrectCase(file, input);
+			Operations.printOutput(lstOutput);
 		} else if (option.equals("3")) {
-			output = getCorrectPunctuation(file, input);
+			lstOutput = getCorrectPunctuation(file, input);
+			Operations.printOutput(lstOutput);
 		} else if (option.equals("4")) {
-			output = getCorrectDuplicateLetters(file, input);
+			lstOutput = getCorrectDuplicateLetters(file, input);
+			Operations.printOutput(lstOutput);
 		} else if (option.equals("5")) {
-			output = getCorrectAdjacentLetters(file, input);
+			lstOutput = getCorrectAdjacentLetters(file, input);
+			Operations.printOutput(lstOutput);
 		} else if (option.equals("6")) {
-			output = getTransposingLetters(file, input);
+			lstOutput = getTransposingLetters(file, input);
+			Operations.printOutput(lstOutput);
+		} else {
+			Operations.printOutput(output);
 		}
-		
-		Operations.printOutput(output);
 		
 	}
 	
@@ -116,7 +126,7 @@ public class Operations {
 	 * Exercise 2: Correct case
 	 * @param: file, matchWord
 	 */
-	public static String getCorrectCase(File file, String matchWord) {
+	public static ArrayList<String> getCorrectCase(File file, String matchWord) {
 		ArrayList<String> wordList = new ArrayList<>();
 		try {
 		    scanner = new Scanner(file);
@@ -132,14 +142,14 @@ public class Operations {
 		} catch(FileNotFoundException e) { 
 			System.out.println("Read file error: "+ e.getMessage());
 		}
-		return String.join(", ", wordList);
+		return wordList;
 	}
 	
 	/*
 	 * Exercise 3: Correct punctuation
 	 * @param: file, matchWord
 	 */
-	public static String getCorrectPunctuation(File file, String matchWord) {
+	public static ArrayList<String> getCorrectPunctuation(File file, String matchWord) {
 		
 	    ArrayList<String> wordList = new ArrayList<>();
 	    
@@ -159,7 +169,7 @@ public class Operations {
 			System.out.println("Read file error: "+ e.getMessage());
 		}
 	    
-		return String.join(", ", wordList);
+		return wordList;
 	}
 	
 	/*
@@ -182,7 +192,7 @@ public class Operations {
 	 * Exercise 4: Correct duplicate letters
 	 * @param: file, matchWord
 	 */
-	public static String getCorrectDuplicateLetters(File file, String matchWord) {
+	public static ArrayList<String> getCorrectDuplicateLetters(File file, String matchWord) {
 		ArrayList<String> wordList = new ArrayList<>();
 		try {
 		    scanner = new Scanner(file);
@@ -197,14 +207,14 @@ public class Operations {
 		} catch(FileNotFoundException e) { 
 			System.out.println("Read file error: "+ e.getMessage());
 		}
-		return String.join(", ", wordList);
+		return wordList;
 	}
 	
 	/*
 	 * Exercise 5: Correct adjacent letters
 	 * @param: file, matchWord
 	 */
-	public static String getCorrectAdjacentLetters(File file, String matchWord) {
+	public static ArrayList<String> getCorrectAdjacentLetters(File file, String matchWord) {
 		ArrayList<String> wordList = new ArrayList<>();
 		try {
 		    scanner = new Scanner(file);
@@ -220,7 +230,7 @@ public class Operations {
 		} catch(FileNotFoundException e) { 
 			System.out.println("Read file error: "+ e.getMessage());
 		}
-		return String.join(", ", wordList);
+		return wordList;
 	}
 	
 	/*
@@ -235,7 +245,7 @@ public class Operations {
 			// Create & match dynamic Pattern object
 		     Pattern r = Pattern.compile(regex, Pattern.CASE_INSENSITIVE);
 		     Matcher m = r.matcher(line);
-		     if (m.find()) {
+		     if (m.matches()) {
 		    	 isMatch = true;
 		    	 break;
 		     }
@@ -247,7 +257,7 @@ public class Operations {
 	 * Exercise 6: Transposing letters
 	 * @param: file, matchWord
 	 */
-	public static String getTransposingLetters(File file, String matchWord) {
+	public static ArrayList<String> getTransposingLetters(File file, String matchWord) {
 		ArrayList<String> wordList = new ArrayList<>();
 		try {
 		    scanner = new Scanner(file);
@@ -263,7 +273,7 @@ public class Operations {
 		} catch(FileNotFoundException e) { 
 			System.out.println("Read file error: "+ e.getMessage());
 		}
-		return String.join(", ", wordList);
+		return wordList;
 	}
 	
 	/*
@@ -274,15 +284,11 @@ public class Operations {
 		char pos1, pos2;
 		StringBuilder word = new StringBuilder();
 		
-		if (line.equalsIgnoreCase("delhi")) {
-			isMatch = false;
-		}
-		
+		word.append(matchWord);
 		for(int i=0;i<matchWord.length()-1;i++) {
-			word.setLength(0); 
-			word.append(matchWord);
-			pos1 = matchWord.charAt(i);
-			pos2 = matchWord.charAt(i+1);
+			
+			pos1 = word.charAt(i);
+			pos2 = word.charAt(i+1);
 			
 				if (pos1 != pos2) {
 					
@@ -292,22 +298,39 @@ public class Operations {
 					// Create & match dynamic Pattern object
 				     Pattern r = Pattern.compile(word.toString(), Pattern.CASE_INSENSITIVE);
 				     Matcher m = r.matcher(line);
-				     if (m.find()) {
+				     if (m.matches()) {
 				    	 isMatch = true;
 				    	 break;
 			     }
 			}
+			i++;
 		}
 		return isMatch;	
 	}
 	
 	/*
 	 * Print result
-	 * @param: 
+	 * @param: result
 	 */
 	public static void printOutput(String result) {
 		result = result.isEmpty() ? "None" : result;
 		System.out.println("Output: "+result);
+	}
+	
+	/*
+	 * Print result list
+	 * @param: result list
+	 */
+	public static void printOutput(ArrayList<String> result) {
+		if (result.isEmpty()){
+			System.out.println("Output: None");
+		} else {
+			System.out.println("Output list: ");
+			for(String str: result) {
+				System.out.println(str);
+			}
+		}
+		
 	}
 	
 }

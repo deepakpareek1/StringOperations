@@ -14,7 +14,7 @@ public class MainClass {
 	 */
 	public static void main(String[] args) {
 		
-		File file = Operations.getFile("C:/Users/dpareek/Documents/dictionary.txt");
+		File file = Operations.getFile(Operations.FILE_PATH);
 		
 		ArrayList<String> input = Operations.readInput();
 		
